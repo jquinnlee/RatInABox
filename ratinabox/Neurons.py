@@ -1029,6 +1029,7 @@ class GridCells(Neurons):
         "orientation": (0, 2 * np.pi), #radians 
         "phase_offset_distribution": "uniform",
         "phase_offset": (0, 2 * np.pi), #degrees 
+        "shift_origin": (0., 0.),  # shift origin from zero by defined amount
         "description": "three_rectified_cosines",  # can also be "three_shifted_cosines" as in Solstad 2006 Eq. (2)
         "min_fr": 0,
         "max_fr": 1,
@@ -1149,6 +1150,7 @@ class GridCells(Neurons):
         # grid cells are modelled as the thresholded sum of three cosines all at 60 degree offsets
         # vectors to grids cells "centred" at their (random) phase offsets
         origin = self.gridscales.reshape(-1, 1) * self.phase_offsets / (2 * np.pi)
+        origin += self.params["shift_origin"] # shift origin by defined distance in x and y (default is zero)
         vecs = utils.get_vectors_between(origin, pos)  # shape = (N_cells,N_pos,2)
         w1 = np.tile(np.expand_dims(self.w[:, 0, :], axis=1), reps=(1, pos.shape[0], 1))
         w2 = np.tile(np.expand_dims(self.w[:, 1, :], axis=1), reps=(1, pos.shape[0], 1))
